@@ -34,7 +34,7 @@ if __name__ == "__main__":
             break
         lines.append(line)
     keyword = lines[0].strip()
-    output_lines = [vigenere_cipher(line, keyword, encrypt) for line in lines[1:]]
+    output_lines = [vigenere_cipher(line, keyword, encrypt, auto_key) for line in lines[1:]]
     output_text = "\n".join(output_lines)
     with open("result.txt", "w", encoding="utf-8") as f:
         f.write(output_text)
