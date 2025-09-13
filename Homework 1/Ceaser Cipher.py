@@ -1,5 +1,3 @@
-import numpy as np
-
 def caesar_cipher(message, shift):
     result = ""
     for char in message:
@@ -13,9 +11,19 @@ def caesar_cipher(message, shift):
 
 if __name__ == "__main__":
     choice = input("Type 'e' to encrypt, 'd' to decrypt: ").strip().lower()
-    message = input("Enter your message: ")
-    shift = np.mod(int(input("Enter the shift amount: ")), 26) 
+    shift = int(input("Enter the shift amount: "))
     if choice == 'd':
         shift = -shift
-    output = caesar_cipher(message, shift)
+    print("Enter your message (end with an empty line):")
+    lines = []
+    while True:
+        line = input()
+        if line == "":
+            break
+        lines.append(line)
+    output_lines = [caesar_cipher(line, shift) for line in lines]
+    output_text = "\n".join(output_lines)
+    with open("result.txt", "w", encoding="utf-8") as f:
+        f.write(output_text)
+    output = output_text
     print(f"Result: {output}")
