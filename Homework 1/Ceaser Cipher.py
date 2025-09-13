@@ -1,8 +1,11 @@
+import os
+
 def caesar_cipher(message, shift):
     result = ""
     for char in message:
         if char.isalpha():
-            base = ord('A') if char.isupper() else ord('a')
+            char = char.lower()
+            base = ord('a')
             shifted = (ord(char) - base + shift) % 26 + base
             result += chr(shifted)
         else:
@@ -10,20 +13,26 @@ def caesar_cipher(message, shift):
     return result
 
 if __name__ == "__main__":
+
     choice = input("Type 'e' to encrypt, 'd' to decrypt: ").strip().lower()
     shift = int(input("Enter the shift amount: "))
     if choice == 'd':
         shift = -shift
-    print("Enter your message (end with an empty line):")
-    lines = []
-    while True:
-        line = input()
-        if line == "":
-            break
-        lines.append(line)
-    output_lines = [caesar_cipher(line, shift) for line in lines]
+
+    input_file = input("Enter the input file path: ").strip()
+    while not os.path.isfile(input_file):
+        print("File not found. Please enter a valid file path.")
+        input_file = input("Enter the input file path: ").strip()
+
+    output_file = input("Enter the output file name: ").strip()
+
+    with open(input_file, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    output_lines = [caesar_cipher(line.rstrip('\n'), shift) for line in lines]
     output_text = "\n".join(output_lines)
-    with open("result.txt", "w", encoding="utf-8") as f:
+
+    with open(output_file, "w", encoding="utf-8") as f:
         f.write(output_text)
-    output = output_text
-    print(f"Result: {output}")
+
+    print(f"Result written to {output_file}")
