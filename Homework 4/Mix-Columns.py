@@ -9,15 +9,37 @@
 import numpy as np
 
 
+def gf_multiply(a, b):
+    # Galois Field (256) multiplication of a and b
+    p = 0
+    for _ in range(8):
+        if b & 1:
+            p ^= a
+        hi_bit_set = a & 0x80
+        a <<= 1
+        a &= 0xFF
+        if hi_bit_set:
+            a ^= 0x1B
+        b >>= 1
+    return p
+
+
 def mix_columns(state):
-    transormation_matrix = [
+    transformation_matrix = [
         [0x02, 0x03, 0x01, 0x01],
         [0x01, 0x02, 0x03, 0x01],
         [0x01, 0x01, 0x02, 0x03],
         [0x03, 0x01, 0x01, 0x02]
     ]
-    output_state = state @ transormation_matrix
-    output_state = output_state % 256
+    
+    output_state = np.zeros_like(state)
+    # Perform the Mix-Columns transformation
+    for i in range(4):
+        for j in range(4):
+            result = 0
+            for k in range(4):
+                result ^= gf_multiply(transformation_matrix[i][k], state[k][j])
+            output_state[i][j] = result
     return output_state
 
 
@@ -26,12 +48,13 @@ if __name__ == "__main__":
     input_file_name = input("Enter name of input file: ").strip()
     output_file_name = input_file_name.replace("input", "output")
 
-    with open(input_file_name, "r", encoding="utf-8") as infile, \
-         open(output_file_name, "a", encoding="utf-8") as outfile:
+    with open(input_file_name, "r") as infile, \
+         open(output_file_name, "a") as outfile:
         for line in infile:
             s = line.strip()
             if not s:
                 continue
+            # Check for valid hex string of length 32
             if len(s) != 32 or any(c not in "0123456789abcdefABCDEF" for c in s):
                 print(f"Invalid input line (expect 32 hex chars): {s}")
                 continue
