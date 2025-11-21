@@ -13,13 +13,18 @@ def gf_multiply(a, b):
     # Galois Field (256) multiplication of a and b
     p = 0
     for _ in range(8):
+        # if b is 0001, add a to p
         if b & 1:
             p ^= a
+        # check if the most significant bit of a is 1
         hi_bit_set = a & 0x80
         a <<= 1
         a &= 0xFF
+        # if the most significant bit was 1, xor with the irreducible polynomial
+        # x^8 + x^4 + x^3 + x + 1 or 0x1B
         if hi_bit_set:
             a ^= 0x1B
+
         b >>= 1
     return p
 
