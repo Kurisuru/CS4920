@@ -54,7 +54,7 @@ if __name__ == "__main__":
     output_file_name = input_file_name.replace("input", "output")
 
     with open(input_file_name, "r") as infile, \
-         open(output_file_name, "a") as outfile:
+         open(output_file_name, "w") as outfile:
         for line in infile:
             s = line.strip()
             if not s:
